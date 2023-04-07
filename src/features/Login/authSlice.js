@@ -47,6 +47,7 @@ export const authSlice = createSlice({
                 if(action.payload.type==='success'){
                     state.status = 'success';
                     state.JWT = action.payload.token;
+                    localStorage.setItem('token', action.payload.token);
                     state.isAuthorised = true;
                 } else {
                     state.status = action.payload.message;
