@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { validateSignIn, validateSignUp } from "./authThunks";
+import { submitBasicInfo, validateSignIn, validateSignUp } from "./authThunks";
 
 const initialState = {
     isAuthorised: false,
@@ -62,6 +62,17 @@ export const authSlice = createSlice({
                     state.JWT = action.payload.token;
                     localStorage.setItem('token', action.payload.token);
                     state.isAuthorised = true;
+                } else {
+                    state.status = action.payload.message;
+                }
+            })
+            .addCase(submitBasicInfo.pending, (state) => {
+                state.status = 'loading';
+            })
+            .addCase(submitBasicInfo.fulfilled, (state, action) => {
+                if(action.payload.type==='success'){
+                    state.userDetails.newUser = false;
+                    state.status = 'success';
                 } else {
                     state.status = action.payload.message;
                 }
