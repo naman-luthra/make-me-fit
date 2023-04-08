@@ -7,6 +7,7 @@ import { App } from './App';
 import { PrivateRoute } from './features/Login/PrivateRoute';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { SignIn } from './features/Login/SignIn';
+import { SignUp } from './features/Login/SignUp';
 
 const container = document.getElementById('root');
 const root = createRoot(container);
@@ -17,6 +18,7 @@ root.render(
       <Routes>
         <Route path="/" element={<PrivateRoute><App /></PrivateRoute>} />
         <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
       </Routes>
     </BrowserRouter>
   </Provider>

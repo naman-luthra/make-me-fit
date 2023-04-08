@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { validateSignIn } from "./authThunks";
 import { status, isAuthorised, setJWT, setUserData, setStatus } from "./authSlice";
 import { useDispatch } from "react-redux";
@@ -19,6 +19,7 @@ export const SignIn = ()=>{
     const [ emailAlert, setEmailAlert ] = useState(false);
     const [ passwordAlert, setPasswordAlert ] = useState(false);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const handleSignIn = () => {
         if(!email || !password){
             if(!email) setEmailAlert(true);
@@ -53,35 +54,38 @@ export const SignIn = ()=>{
                             <AiFillEyeInvisible onClick={()=>{setPasswordVisible(!passwordVisible)}} className="h-6 w-6 text-basys-blue"/>
                         }
                     </div>
-                    <div className="w-10/12 inline-block my-2">
-                    <div className="w-full h-4">
-                        {
-                            statusState==='Error: 401' &&
-                            <div className="text-red-600 text-xs">
-                                Wrong email or password!
-                            </div>
-                        }
-                        {
-                            statusState==='Error: 404' &&
-                            <div className="text-red-600 text-xs">
-                                User doesn't exist!
-                            </div>
-                        }
-                        {
-                            (emailAlert || passwordAlert) &&
-                            <div className="text-red-600 text-xs">
-                                All fields are mandatory!
-                            </div>
-                        }
+                    <div className="my-2">
+                        <div className="w-full h-4">
+                            {
+                                statusState==='Error: 401' &&
+                                <div className="text-red-600 text-xs">
+                                    Wrong email or password!
+                                </div>
+                            }
+                            {
+                                statusState==='Error: 404' &&
+                                <div className="text-red-600 text-xs">
+                                    User doesn't exist!
+                                </div>
+                            }
+                            {
+                                (emailAlert || passwordAlert) &&
+                                <div className="text-red-600 text-xs">
+                                    All fields are mandatory!
+                                </div>
+                            }
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <div onClick={()=>{navigate('/signup')}} className="cursor-pointer hover:opacity-70">Don't have an account?</div>
+                            <button disabled={statusState==='loading'} onClick={handleSignIn} className={`mt-2 w-1/3 bg-gray-800 text-white font-semibold p-2 rounded hover:opacity-70`}>
+                                {
+                                    statusState==='loading' ?
+                                    <Loading width={24} height={24} stroke="white" className="mx-auto"/> :
+                                    "Sign In"
+                                }
+                            </button>
+                        </div>
                     </div>
-                    <button disabled={statusState==='loading'} onClick={handleSignIn} className={`mt-2 w-1/3 bg-gray-800 text-white font-semibold p-2 rounded hover:opacity-70`}>
-                        {
-                            statusState==='loading' ?
-                            <Loading width={24} height={24} stroke="white" className="mx-auto"/> :
-                            "Sign In"
-                        }
-                    </button>
-                </div>
                 </div>
             </div>
         </div>
