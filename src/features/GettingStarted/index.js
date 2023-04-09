@@ -1,9 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
-import { userDetails } from "../Login/authSlice";
+import { status, userDetails } from "../Login/authSlice";
 import { useState } from "react";
 import { InlineInput } from "../generalComponents/InlineInput";
 import { BsFillArrowRightCircleFill } from "react-icons/bs";
 import { submitBasicInfo } from "../Login/authThunks";
+import { Loading } from "../generalComponents/Loading";
 
 export const GettingStarted = () => {
     const user = useSelector(userDetails);
@@ -17,6 +18,8 @@ export const GettingStarted = () => {
     const [activity, setActivity] = useState("");
     const [weightGoal, setWeightGoal] = useState("");
     const [activityGoal, setActivityGoal] = useState("");
+
+    const statusState = useSelector(status);
 
     const dispatch = useDispatch();
     return (
@@ -109,7 +112,13 @@ export const GettingStarted = () => {
                 page===6 ?
                 <div className="font-semibold flex flex-col items-center gap-4">
                     <div className="text-3xl">Thanks for putting in the information!</div>
-                    <button onClick={()=>{dispatch(submitBasicInfo({age, gender, weight, height, diet, activity, weightGoal, activityGoal}))}} className="bg-gray-800 text-white font-semibold py-2 px-3 w-fit rounded hover:opacity-90">Submit and go to the app</button>
+                    <button onClick={()=>{dispatch(submitBasicInfo({age, gender, weight, height, diet, activity, weightGoal, activityGoal}))}} className="bg-gray-800 text-white font-semibold py-2 px-3 w-60 rounded hover:opacity-90">
+                        {
+                            statusState==="loading" ?
+                            <Loading width={24} height={24} stroke="white" className="mx-auto"/>
+                            : "Submit and go to the app"
+                        }
+                    </button>
                 </div> :
                 <></>
             }
