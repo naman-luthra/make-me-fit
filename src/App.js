@@ -1,8 +1,7 @@
 import { useSelector } from "react-redux";
-import { userDetails } from "./features/Login/authSlice";
-import { GettingStarted } from "./features/GettingStarted";
 import { Dashborad } from "./features/Dashboard";
 import { Navbar } from "./features/generalComponents/Navbar";
+import { userDetails } from "./features/Login/authSlice";
 
 export const App = () => {
   const user = useSelector(userDetails);
@@ -10,11 +9,7 @@ export const App = () => {
   return (
     <div className="App">
       <Navbar />
-      {
-        user.newUser ?
-        <GettingStarted /> :
-        <Dashborad />
-      }
+      <Dashborad />
     </div>
   );
 }

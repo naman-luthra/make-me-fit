@@ -31,7 +31,7 @@ export const SignUp = () => {
         <div className="flex gap-5 justify-center items-center h-screen">
             <img src="./img/logo.png" alt="" className="rounded-md h-56"/>
             <div className="">
-                <div className="font-bold text-2xl flex gap-3 items-center text-gray-600">
+                <div className="font-semibold text-2xl flex gap-3 items-center text-gray-600">
                     <span>I am</span>
                     <div className="flex gap-2">
                         <input type="text" value={firstName} onChange={e=>setFirstName(e.target.value)} placeholder="John" className={`bg-gray-200 text-gray-800 p-1 focus:outline-none text-center focus:placeholder-gray-200 border-2 rounded-md ${alert ? (alert.code===1 && !firstName) ? 'border-red-500' : 'border-gray-200' : 'border-gray-200'}`} style={{width:`${Math.max(5,firstName.length+1)}ch`}}/>

@@ -1,10 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
-import { status, userDetails } from "../Login/authSlice";
+import { userDetails } from "../Login/authSlice";
 import { useState } from "react";
 import { InlineInput } from "../generalComponents/InlineInput";
 import { BsFillArrowRightCircleFill } from "react-icons/bs";
-import { submitBasicInfo } from "../Login/authThunks";
+import { submitBasicInfo } from "../userData/dataThunk";
 import { Loading } from "../generalComponents/Loading";
+import { dataStatus } from "../userData/dataSlice";
 
 export const GettingStarted = () => {
     const user = useSelector(userDetails);
@@ -19,7 +20,7 @@ export const GettingStarted = () => {
     const [weightGoal, setWeightGoal] = useState("");
     const [activityGoal, setActivityGoal] = useState("");
 
-    const statusState = useSelector(status);
+    const statusState = useSelector(dataStatus);
 
     const dispatch = useDispatch();
     return (
