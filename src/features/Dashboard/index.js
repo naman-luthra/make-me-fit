@@ -1,12 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
 import { userDetails } from "../Login/authSlice";
-import { getUserData } from "../userData/dataThunk";
+import { getPlanData, getUserData, setUserImage, updateUserMetrics } from "../userData/dataThunk";
 import { useEffect, useState } from "react";
-import { activeFitnessPlan as activeFitness, bodyMetrics, fitnessPlans, mealPlan, newUser, setActiveMealPlan, setActiveWorkoutRoutine, workoutRoutine } from "../userData/dataSlice";
+import { activeFitnessPlan as activeFitness, bodyMetrics, fitnessPlans, mealPlan, newUser, setActiveMealPlan, setActiveWorkoutRoutine, userImage, workoutRoutine } from "../userData/dataSlice";
 import { CreatePlan } from "../CreatePlan";
 import { GettingStarted } from "../GettingStarted";
 import { Table } from "../generalComponents/Table";
-import { AiFillEdit } from "react-icons/ai";
+import { GrUpload } from "react-icons/gr";
+import { PopUpWrapper } from "../generalComponents/PopUpWrapper";
+import { InlineInput } from "../generalComponents/InlineInput";
 
 export const Dashborad = () => {
     const dispatch = useDispatch();
@@ -18,10 +20,25 @@ export const Dashborad = () => {
     const activeWorkoutRoutine = useSelector(workoutRoutine);
     const newUserBoolean = useSelector(newUser);
     const userFitnessPlans = useSelector(fitnessPlans);
+    const userImageSrc = useSelector(userImage);
 
     const [ openCreatePlan, setOpenCreatePlan ] = useState(false);
     const [ openSwitchPlan, setOpenSwitchPlan ] = useState(false);
     const [ plan, setPlan ] = useState("fitness");
+    const [ uploadImage, setUploadImage ] = useState(false);
+    const [ image, setImage ] = useState(null);
+    const [ editProfile, setEditProfile ] = useState(false);
+    const [ weight , setWeight ] = useState("");
+    const [ height , setHeight ] = useState("");
+    const [ weightGoal, setWeightGoal ] = useState("");
+    const [ gender, setGender ] = useState("");
+
+    const updatedProfile = ( 
+        weight!==userBodyMetrics?.weight.toString() ||
+        height!==userBodyMetrics?.height.toString() ||
+        weightGoal!==userBodyMetrics?.weightGoal.toString() ||
+        gender!==userBodyMetrics?.gender
+    );
 
     const today = new Date().getDay();
     const todayMealPlan =  activeMealPlan?.data[today];
@@ -29,7 +46,15 @@ export const Dashborad = () => {
 
     useEffect(()=>{
         if(userBodyMetrics===null) dispatch(getUserData());
+        else {
+            setWeight(userBodyMetrics.weight.toString());
+            setHeight(userBodyMetrics.height.toString());
+            setWeightGoal(userBodyMetrics.weightGoal.toString());
+            setGender(userBodyMetrics.gender);
+        }
     },[userBodyMetrics, dispatch]);
+
+    if(userBodyMetrics===null) return <div>Loading...</div>;
 
     return (
         newUserBoolean ? 
@@ -51,8 +76,11 @@ export const Dashborad = () => {
             <div className="grid grid-cols-5 gap-6 mt-4">
                 <div className="flex flex-col gap-4 col-span-2">
                     <div className="rounded-md bg-gray-100 p-4 flex gap-8 items-center h-fit">
-                        <div className="w-32 h-32 rounded-full overflow-hidden">
-                            <img src="./img/default-dp.jpeg" alt="" className="w-32 h-32"/>
+                        <div className="w-32 h-32 rounded-full overflow-hidden group relative cursor-pointer">
+                            <img id="display-picture" src={ userImageSrc ? userImageSrc : "./img/default-dp.jpeg" } alt="" className="w-32 h-32"/>
+                            <div onClick={()=>setUploadImage(true)} className="h-full w-full bg-black bg-opacity-20 absolute top-0 left-0 hidden justify-center items-center group-hover:flex">
+                                <GrUpload className="text-xl"/>
+                            </div>
                         </div>
                         <div className="grow">
                             <div className="text-2xl font-semibold">{userBasic.firstName} {userBasic.lastName}</div>
@@ -64,9 +92,8 @@ export const Dashborad = () => {
                                     <div>{userBodyMetrics?.height} cm</div>
                                 </div>
                             </div>
-                            <div className="text-sm mt-2 font-semibold text-gray-600 flex items-center gap-1">
+                            <div onClick={()=>setEditProfile(true)} className="text-sm mt-2 font-semibold text-gray-600 cursor-pointer hover:text-gray-800 flex items-center gap-1">
                                 <div>Manage profile</div>
-                                <AiFillEdit className="text-base"/>
                             </div>
                         </div>
                     </div>
@@ -148,28 +175,82 @@ export const Dashborad = () => {
                 <CreatePlan plan={plan} setShowCreate={setOpenCreatePlan}/> :
                 null
             }
-            {
-                openSwitchPlan ?
-                <div onClick={()=>setOpenSwitchPlan(false)} className="bg-black bg-opacity-10 fixed top-0 left-0 h-screen w-full z-50 flex justify-center items-center">
-                    <div onClick={e=>e.stopPropagation()} className="w-1/4 bg-white p-6 rounded-md flex justify-center items-center">
-                        <div>
-                            <div className="text-2xl font-bold">Choose a plan</div>
-                            <div className="grid gap-2 mt-2">
-                            {
-                                userFitnessPlans.map((fitnessPlan, index)=>(
-                                    <div onClick={()=>{
-                                        setOpenSwitchPlan(false);
-                                    }} key={index} className="p-2 bg-gray-200 font-semibold rounded-md cursor-pointer hover:opacity-80">
-                                        <div>{fitnessPlan.plan_name}</div>
-                                    </div>
-                                ))
-                            }
+            <PopUpWrapper show={openSwitchPlan} setShow={setOpenSwitchPlan} className="w-1/4 bg-white p-6 rounded-md flex justify-center items-center">
+                <div>
+                    <div className="text-2xl font-bold">Choose a plan</div>
+                    <div className="grid gap-2 mt-2">
+                    {
+                        userFitnessPlans.map((fitnessPlan, index)=>(
+                            <div onClick={()=>{
+                                dispatch(getPlanData({planId: fitnessPlan.plan_id}));
+                                setOpenSwitchPlan(false);
+                            }} key={index} className="p-2 bg-gray-200 font-semibold rounded-md cursor-pointer hover:opacity-80">
+                                <div>{fitnessPlan.plan_name}</div>
                             </div>
-                        </div>
+                        ))
+                    }
                     </div>
-                </div> :
-                null
-            }
+                </div>
+            </PopUpWrapper>
+            <PopUpWrapper show={uploadImage} setShow={setUploadImage} className="w-1/3 bg-white p-6 rounded-md flex justify-center items-center">
+                <div className="w-full text-center">
+                    {
+                        image ?
+                        <div className="flex flex-col justify-center items-center">
+                            <div className="w-52 h-52 rounded-full overflow-hidden">
+                                <img src={URL.createObjectURL(image)} alt="" className="w-52 h-52"/>
+                            </div>
+                            <div className="flex items-center gap-2 mt-4">
+                                <button onClick={()=>{
+                                    setImage(null);
+                                }} className="font-semibold bg-gray-800 text-white p-1 px-2 rounded-md hover:opacity-90">Choose Other</button>
+                                <button onClick={()=>{
+                                    dispatch(setUserImage({image}));
+                                    setUploadImage(false);
+                                }} className="font-semibold bg-gray-800 text-white p-1 px-2 rounded-md hover:opacity-90">Upload</button>
+                            </div>
+                        </div> :
+                        <>
+                            <div className="text-2xl font-bold">Upload Image</div>
+                            <div className="h-36 border-2 border-gray-800 border-dashed rounded-md mt-2" onDrop={e=>{
+                                setImage(e.dataTransfer.files[0]);
+                                e.preventDefault();
+                                }} onDragOver={e=>e.preventDefault()}>
+                                <div className="font-bold text-gray-500">Drop image here</div>
+                            </div>
+                            <input type="file" multiple={false} onChange={e=>{setImage(e.target.files[0])}}/>
+                        </>
+                    }
+                </div>
+            </PopUpWrapper>
+            <PopUpWrapper show={editProfile} setShow={setEditProfile} className="w-1/3 bg-white p-6 rounded-md flex justify-center items-center">
+                <div>
+                    <div className="flex text-2xl items-center gap-2">
+                        <div className="font-medium">Weight</div>
+                        <InlineInput className="ml-2" value={weight} setValue={setWeight} placeholder={""}/>
+                    </div>
+                    <div className="flex text-2xl items-center gap-2 mt-2">
+                        <div className="font-medium">Height</div>
+                        <InlineInput className="ml-2" value={height} setValue={setHeight} placeholder={""}/>
+                    </div>
+                    <div className="flex text-2xl items-center gap-2 mt-2">
+                        <div className="font-medium">Weight Goal</div>
+                        <InlineInput className="ml-2" value={weightGoal} setValue={setWeightGoal} placeholder={""}/>
+                    </div>
+                    <div className="flex text-2xl items-center gap-2 mt-2">
+                        <div className="font-medium">Gender</div>
+                        <InlineInput className="ml-2" value={gender} setValue={setGender} placeholder={""}/>
+                    </div>
+                    <button onClick={
+                        ()=>{
+                            dispatch(updateUserMetrics({weight, height, weightGoal, gender}));
+                            setEditProfile(false);
+                        }
+                    } disabled={!updatedProfile} className="text-xl bg-gray-800 text-white font-semibold p-1 px-2 rounded-md mt-4 hover:opacity-90 disabled:opacity-80 w-24">
+                        Save
+                    </button>
+                </div>
+            </PopUpWrapper>
         </div>
     );
 }

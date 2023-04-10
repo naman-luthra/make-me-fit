@@ -53,7 +53,7 @@ export const getUserData = createAsyncThunk(
                 if(res.status!==200) throw new Error(`${res.status}`);
                 return res;
             }).then(res=>res.json());
-            return {type: 'success', bodyMetrics: response.bodyMetrics, fitnessPlans: response.fitnessPlans, activeFitnessPlan: response.activeFitnessPlan, mealPlan: response.mealPlan, workoutRoutine: response.workoutRoutine, newUser: response.newUser};
+            return {type: 'success', bodyMetrics: response.bodyMetrics, fitnessPlans: response.fitnessPlans, activeFitnessPlan: response.activeFitnessPlan, newUser: response.newUser, image: response.image};
         } catch (error) {
             return {type: 'error', message: error.toString()};
         }
@@ -155,5 +155,98 @@ export const createFitnessPlan = createAsyncThunk(
             console.log(error);
             return {type: 'error', message: error.toString()};
         }
+    }
+);
+
+export const setUserImage = createAsyncThunk(
+    'data/setUserImage',
+    async ({image}, {getState}) => {
+        try {
+            const toBase64 = file => new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+            const imageString = await toBase64(image);
+            const reqObject = {
+                user_id: getState().auth.userDetails.user_id,
+                image: imageString,
+            }
+            console.log(reqObject);
+            const body=JSON.stringify(reqObject);
+            await fetch('http://localhost:8080/api/upload-user-image',{
+                method: "post",
+                headers:  {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${getState().auth.JWT}`
+                },
+                body,
+            }).then(res=>{
+                if(res.status!==200) throw new Error(`${res.status}`);
+                return res;
+            }).then(res=>res.json());
+            return {type: 'success', image: imageString};
+        } catch (error) {
+            if(error) return {type: 'error', message: error.toString()};
+        }
+    }
+);
+
+export const updateUserMetrics = createAsyncThunk(
+    'data/updateUserMetrics',
+    async ({weight, height, weightGoal, gender}, {getState}) => {
+        try {
+            const reqObject = {
+                user_id: getState().auth.userDetails.user_id,
+                weight,
+                height,
+                weightGoal,
+                gender,
+            }
+            const body=JSON.stringify(reqObject);
+            await fetch('http://localhost:8080/api/update-user-metrics',{
+                method: "post",
+                headers:  {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${getState().auth.JWT}`
+                },
+                body,
+            }).then(res=>{
+                if(res.status!==200) throw new Error(`${res.status}`);
+                return res;
+            }).then(res=>res.json());
+            const {dob, diet, activity, activityGoal} = getState().data.bodyMetrics;
+            return {type: 'success', bodyMetrics: {dob, gender, weight, height, diet, activity, weightGoal, activityGoal}};
+        } catch (error) {
+            if(error) return {type: 'error', message: error.toString()};
+        }
+    }
+);
+export const getPlanData = createAsyncThunk(
+    'data/getPlanData',
+    async ({planId}, {getState}) => {
+        try {
+            const reqObject = {
+                user_id: getState().auth.userDetails.user_id,
+                plan_id: planId,
+            };
+            const body=JSON.stringify(reqObject);
+            const response = await fetch('http://localhost:8080/api/get-plan-data',{
+                method: "post",
+                headers:  {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${getState().auth.JWT}`
+                },
+                body,
+            }).then(res=>{
+                if(res.status!==200) throw new Error(`${res.status}`);
+                return res;
+            }).then(res=>res.json());
+            return {type: 'success', activeFitnessPlan: response.activeFitnessPlan};
+        } catch (error) {
+            if(error) return {type: 'error', message: error.toString()};
+        }
+
     }
 );
