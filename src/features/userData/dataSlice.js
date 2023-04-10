@@ -63,9 +63,10 @@ export const dataSlice = createSlice({
             .addCase(creatMealPlan.fulfilled, (state, action) => {
                 if(action.payload.type==='success'){
                     state.status = 'success';
+                    const filteredPlans = action.payload.regenerate ? state.activeFitnessPlan.mealPlans.filter(plan=>plan.id!==state.activeMealPlan.id) : null;
                     state.activeMealPlan = action.payload.mealPlan;
                     if(state.activeFitnessPlan) 
-                        state.activeFitnessPlan.mealPlans = [...state.activeFitnessPlan.mealPlans, action.payload.mealPlan];          
+                        state.activeFitnessPlan.mealPlans = action.payload.regenerate ? [...filteredPlans, action.payload.mealPlan] : [...state.activeFitnessPlan.mealPlans, action.payload.mealPlan];          
                 } else {
                     state.status = action.payload.message;
                 }
@@ -76,9 +77,10 @@ export const dataSlice = createSlice({
             .addCase(createWorkoutRoutine.fulfilled, (state, action) => {
                 if(action.payload.type==='success'){
                     state.status = 'success';
+                    const filteredRoutines = action.payload.regenerate ? state.activeFitnessPlan.workoutRoutines.filter(routine=>routine.id!==state.activeWorkoutRoutine.id) : null;
                     state.activeWorkoutRoutine = action.payload.workoutRoutine;
                     if(state.activeFitnessPlan) 
-                        state.activeFitnessPlan.workoutRoutines = [...state.activeFitnessPlan.workoutRoutines, action.payload.workoutRoutine];                    
+                        state.activeFitnessPlan.workoutRoutines = action.payload.regenerate ? [...filteredRoutines, action.payload.workoutRoutine] : [...state.activeFitnessPlan.workoutRoutines, action.payload.workoutRoutine];                  
                 } else {
                     state.status = action.payload.message;
                 }

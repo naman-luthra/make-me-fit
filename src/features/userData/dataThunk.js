@@ -62,11 +62,12 @@ export const getUserData = createAsyncThunk(
 
 export const creatMealPlan = createAsyncThunk(
     'data/creatMealPlan',
-    async ({mealPlanName, cuisine, place, breakfast, lunch, dinner, snacks}, {getState}) => {
+    async ({regenerate, mealPlanName, cuisine, place, breakfast, lunch, dinner, snacks}, {getState}) => {
         try {
             const reqObject = {
                 user_id: getState().auth.userDetails.user_id,
                 fitnessPlanId: getState().data.activeFitnessPlan?.id,
+                mealPlanId: regenerate ? getState().data.mealPlan.id : null,
                 mealPlanName,
                 cuisine,
                 place,
@@ -87,7 +88,7 @@ export const creatMealPlan = createAsyncThunk(
                 if(res.status!==200) throw new Error(`${res.status}`);
                 return res;
             }).then(res=>res.json());
-            return {type: 'success', mealPlan: response};
+            return {type: 'success', mealPlan: response, regenerate};
         } catch (error) {
             return {type: 'error', message: error.toString()};
         }
@@ -96,11 +97,12 @@ export const creatMealPlan = createAsyncThunk(
 
 export const createWorkoutRoutine = createAsyncThunk(
     'data/createWorkoutRoutine',
-    async ({workoutRoutineName, goal, equipment}, {getState}) => {
+    async ({regenerate, workoutRoutineName, goal, equipment}, {getState}) => {
         try {
             const reqObject = {
                 user_id: getState().auth.userDetails.user_id,
                 fitnessPlanId: getState().data.activeFitnessPlan?.id,
+                workoutRoutineId: regenerate ? getState().data.activeWorkoutRoutine.id : null,
                 workoutRoutineName,
                 goal,
                 equipment
@@ -118,7 +120,7 @@ export const createWorkoutRoutine = createAsyncThunk(
                 return res;
             }
             ).then(res=>res.json());
-            return {type: 'success', workoutRoutine: response};
+            return {type: 'success', workoutRoutine: response, regenerate};
         } catch (error) {
             return {type: 'error', message: error.toString()};
         }

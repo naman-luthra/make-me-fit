@@ -30,9 +30,9 @@ export const CreatePlan = ({plan, setShowCreate}) => {
     const mealPlan = useSelector(state=>state.data.activeMealPlan);
     const workoutRoutine = useSelector(state=>state.data.activeWorkoutRoutine);
 
-    const setPage = (page) => {
+    const setPage = (page,regenerate) => {
         if(page===4){
-            dispatch(creatMealPlan({mealPlanName, cuisine, place, breakfast, lunch, dinner, snacks}));
+            dispatch(creatMealPlan({regenerate,mealPlanName, cuisine, place, breakfast, lunch, dinner, snacks}));
             let time=0;
             const mealInterval = setInterval(()=>{
                 if(time>16 && status==="success"){
@@ -43,7 +43,7 @@ export const CreatePlan = ({plan, setShowCreate}) => {
             },1000);
         }
         if(page===10){
-            dispatch(createWorkoutRoutine({workoutRoutineName, goal, equipment}));
+            dispatch(createWorkoutRoutine({regenerate,workoutRoutineName, goal, equipment}));
             let time=0;
             const workoutInterval = setInterval(()=>{
                 if(time>16 && status==="success"){
@@ -152,7 +152,7 @@ export const CreatePlan = ({plan, setShowCreate}) => {
                                     <BsFillArrowRightCircleFill className="text-2xl"/>
                                 </button>
                             }
-                            <button onClick={()=>setPage(4)} className="rounded-full p-4 text-xl bg-gray-700 text-white w-fit hover:opacity-90 flex items-center gap-2 mt-4">
+                            <button onClick={()=>setPage(4,true)} className="rounded-full p-4 text-xl bg-gray-700 text-white w-fit hover:opacity-90 flex items-center gap-2 mt-4">
                                 <span>Regenerate</span>
                                 <IoMdRefresh className="text-2xl"/>
                             </button>
@@ -238,7 +238,7 @@ export const CreatePlan = ({plan, setShowCreate}) => {
                                     <BsFillArrowRightCircleFill className="text-2xl"/>
                                 </button>
                             }
-                            <button onClick={()=>setPage(10)} className="rounded-full p-4 text-xl bg-gray-700 text-white w-fit hover:opacity-90 flex items-center gap-2 mt-4">
+                            <button onClick={()=>setPage(10,true)} className="rounded-full p-4 text-xl bg-gray-700 text-white w-fit hover:opacity-90 flex items-center gap-2 mt-4">
                                 <span>Regenerate</span>
                                 <IoMdRefresh className="text-2xl"/>
                             </button>
