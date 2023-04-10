@@ -32,7 +32,7 @@ export const CreatePlan = ({plan, setShowCreate}) => {
 
     const setPage = (page,regenerate) => {
         if(page===4){
-            dispatch(creatMealPlan({regenerate,mealPlanName, cuisine, place, breakfast, lunch, dinner, snacks}));
+            dispatch(creatMealPlan({regenerate, plan, mealPlanName, cuisine, place, breakfast, lunch, dinner, snacks}));
             let time=0;
             const mealInterval = setInterval(()=>{
                 if(time>16 && status==="success"){
@@ -43,7 +43,7 @@ export const CreatePlan = ({plan, setShowCreate}) => {
             },1000);
         }
         if(page===10){
-            dispatch(createWorkoutRoutine({regenerate,workoutRoutineName, goal, equipment}));
+            dispatch(createWorkoutRoutine({regenerate, plan, workoutRoutineName, goal, equipment}));
             let time=0;
             const workoutInterval = setInterval(()=>{
                 if(time>16 && status==="success"){

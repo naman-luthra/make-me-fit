@@ -62,11 +62,11 @@ export const getUserData = createAsyncThunk(
 
 export const creatMealPlan = createAsyncThunk(
     'data/creatMealPlan',
-    async ({regenerate, mealPlanName, cuisine, place, breakfast, lunch, dinner, snacks}, {getState}) => {
+    async ({regenerate, plan, mealPlanName, cuisine, place, breakfast, lunch, dinner, snacks}, {getState}) => {
         try {
             const reqObject = {
                 user_id: getState().auth.userDetails.user_id,
-                fitnessPlanId: getState().data.activeFitnessPlan?.id,
+                fitnessPlanId: plan==="fitness" ? null : getState().data.activeFitnessPlan?.id,
                 mealPlanId: regenerate ? getState().data.mealPlan.id : null,
                 mealPlanName,
                 cuisine,
@@ -97,11 +97,11 @@ export const creatMealPlan = createAsyncThunk(
 
 export const createWorkoutRoutine = createAsyncThunk(
     'data/createWorkoutRoutine',
-    async ({regenerate, workoutRoutineName, goal, equipment}, {getState}) => {
+    async ({regenerate, plan, workoutRoutineName, goal, equipment}, {getState}) => {
         try {
             const reqObject = {
                 user_id: getState().auth.userDetails.user_id,
-                fitnessPlanId: getState().data.activeFitnessPlan?.id,
+                fitnessPlanId: plan==="fitness" ? null : getState().data.activeFitnessPlan?.id,
                 workoutRoutineId: regenerate ? getState().data.activeWorkoutRoutine.id : null,
                 workoutRoutineName,
                 goal,
