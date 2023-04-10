@@ -5,8 +5,8 @@ const initialState = {
     bodyMetrics: null,
     fitnessPlans: [],
     activeFitnessPlan: null,
-    mealPlan: null,
-    workoutRoutine: null,
+    activeMealPlan: null,
+    activeWorkoutRoutine: null,
     status: 'idle',
     newUser: false,
 };
@@ -17,6 +17,12 @@ export const dataSlice = createSlice({
     reducers: {
         setDataStatus: (state,action)=>{
             state.status=action.payload;
+        },
+        setActiveMealPlan: (state,action)=>{
+            state.activeMealPlan=action.payload;
+        },
+        setActiveWorkoutRoutine: (state,action)=>{
+            state.activeWorkoutRoutine=action.payload;
         }
     },
     extraReducers: (builder) => {
@@ -42,8 +48,10 @@ export const dataSlice = createSlice({
                     state.bodyMetrics = action.payload.bodyMetrics;
                     state.fitnessPlans = action.payload.fitnessPlans;
                     state.activeFitnessPlan = action.payload.activeFitnessPlan;
-                    state.mealPlan = action.payload.mealPlan;
-                    state.workoutRoutine = action.payload.workoutRoutine;
+                    if(action.payload.activeFitnessPlan){
+                        state.activeMealPlan =  action.payload.activeFitnessPlan.mealPlans.find(plan=>plan.id===action.payload.activeFitnessPlan.activeMealPlanId);
+                        state.activeWorkoutRoutine = action.payload.activeFitnessPlan.workoutRoutines.find(routine=>routine.id===action.payload.activeFitnessPlan.activeWorkoutRoutineId);
+                    }
                     state.newUser = action.payload.newUser;
                 } else {
                     state.status = action.payload.message;
@@ -55,23 +63,9 @@ export const dataSlice = createSlice({
             .addCase(creatMealPlan.fulfilled, (state, action) => {
                 if(action.payload.type==='success'){
                     state.status = 'success';
-                    const mealPlanTable =  action.payload.mealPlan.split('\n').map((item)=>item.split('|'));
-                    const mealPlanObj = ['1','2','3','4','5','6','7'].map((day)=>{
-                        const dayPlan = {};
-                        mealPlanTable.forEach((item)=>{
-                            if(item[0]===day){
-                                dayPlan[item[1].toLowerCase()] = {
-                                    name: item[2],
-                                    calories: item[3],
-                                };
-                            }
-                        });
-                        return dayPlan;
-                    })
-                    state.mealPlan = {
-                        id: action.payload.mealPlanId,
-                        data: mealPlanObj,
-                    }                      
+                    state.activeMealPlan = action.payload.mealPlan;
+                    if(state.activeFitnessPlan) 
+                        state.activeFitnessPlan.mealPlans = [...state.activeFitnessPlan.mealPlans, action.payload.mealPlan];          
                 } else {
                     state.status = action.payload.message;
                 }
@@ -82,25 +76,9 @@ export const dataSlice = createSlice({
             .addCase(createWorkoutRoutine.fulfilled, (state, action) => {
                 if(action.payload.type==='success'){
                     state.status = 'success';
-                    const workoutRoutineTable =  action.payload.workoutRoutine.split('\n').map((item)=>item.split('|'));
-                    const workoutRoutineObj = ['1','2','3','4','5','6','7'].map((day)=>{
-                        const dayPlan = [];
-                        workoutRoutineTable.forEach((item)=>{
-                            if(item[0]===day){
-                                dayPlan.push({
-                                    name: item[1],
-                                    sets: item[2],
-                                    reps: item[3],
-                                    muscleGroup: item[4],
-                                });
-                            }
-                        });
-                        return dayPlan;
-                    })
-                    state.workoutRoutine = {
-                        id: action.payload.workoutRoutineId,
-                        data: workoutRoutineObj,
-                    }                      
+                    state.activeWorkoutRoutine = action.payload.workoutRoutine;
+                    if(state.activeFitnessPlan) 
+                        state.activeFitnessPlan.workoutRoutines = [...state.activeFitnessPlan.workoutRoutines, action.payload.workoutRoutine];                    
                 } else {
                     state.status = action.payload.message;
                 }
@@ -112,7 +90,14 @@ export const dataSlice = createSlice({
                 if(action.payload.type==='success'){
                     state.status = 'success';
                     state.fitnessPlans = [...state.fitnessPlans, action.payload.fitnessPlanId];
-                    state.activeFitnessPlan = action.payload.fitnessPlanId;
+                    state.activeFitnessPlan = {
+                        id: action.payload.fitnessPlanId,
+                        name: action.payload.fitnessPlanName,
+                        mealPlans: [ state.activeMealPlan ],
+                        workoutRoutines: [ state.activeWorkoutRoutine ],
+                        activeMealPlanId: state.activeMealPlan.id,
+                        activeWorkoutRoutineId: state.activeWorkoutRoutine.id,
+                    }
                 } else {
                     state.status = action.payload.message;
                 }
@@ -120,11 +105,11 @@ export const dataSlice = createSlice({
     }
 });
 
-export const { setDataStatus } = dataSlice.actions;
+export const { setDataStatus, setActiveMealPlan, setActiveWorkoutRoutine } = dataSlice.actions;
 export const dataStatus = state => state.data.status;
 export const bodyMetrics = state => state.data.bodyMetrics;
 export const fitnessPlans = state => state.data.fitnessPlans;
 export const activeFitnessPlan = state => state.data.activeFitnessPlan;
-export const mealPlan = state => state.data.mealPlan;
-export const workoutRoutine = state => state.data.workoutRoutine;
+export const mealPlan = state => state.data.activeMealPlan;
+export const workoutRoutine = state => state.data.activeWorkoutRoutine;
 export const newUser = state => state.data.newUser;

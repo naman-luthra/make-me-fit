@@ -10,7 +10,9 @@ import { dataStatus } from "../userData/dataSlice";
 export const GettingStarted = () => {
     const user = useSelector(userDetails);
     const [page, setPage] = useState(0);
-    const [age, setAge] = useState("");
+    const [year, setYear] = useState("");
+    const [month, setMonth] = useState("");
+    const [day, setDay] = useState("");
     const [weight, setWeight] = useState("");
     const [height, setHeight] = useState("");
     const [gender, setGender] = useState("");
@@ -21,6 +23,7 @@ export const GettingStarted = () => {
     const [activityGoal, setActivityGoal] = useState("");
 
     const statusState = useSelector(dataStatus);
+    const dob = `${year}-${month}-${day}`;
 
     const dispatch = useDispatch();
     return (
@@ -39,20 +42,24 @@ export const GettingStarted = () => {
                 <div className="font-semibold text-3xl">
                     <div className="grid gap-1.5">
                         <div className="flex gap-2 items-center">
-                            <span>I am</span>
-                            <InlineInput value={age} setValue={setAge} placeholder="25" errorCondition={error && !age}/>
-                            <span>years old</span>
+                            <span>I am a</span>
                             <InlineInput value={gender} setValue={setGender} placeholder="Male" errorCondition={error && !gender}/>
                             <span>,</span>
                         </div>
                         <div className="flex gap-2 items-center">
-                            <span>My weight is</span>
+                            <span>my weight is</span>
                             <InlineInput value={weight} setValue={setWeight} placeholder="75" errorCondition={error && !weight}/>
                             <span>kg,</span>
-                            
                         </div>
                         <div className="flex gap-2 items-center">
-                            <span>and my Height is</span>
+                            <span>my date of birth is</span>
+                            <InlineInput value={day} setValue={setDay} placeholder="DD" errorCondition={error && !day}/>
+                            <InlineInput value={month} setValue={setMonth} placeholder="MM" placeholderLength={4} errorCondition={error && !month}/>
+                            <InlineInput value={year} setValue={setYear} placeholder="YYYY" errorCondition={error && !year}/>
+                            <span>,</span>
+                        </div>
+                        <div className="flex gap-2 items-center">
+                            <span>and my height is</span>
                             <InlineInput value={height} setValue={setHeight} placeholder="175" errorCondition={error && !height}/>
                             <span>cm.</span>
                         </div>
@@ -60,7 +67,7 @@ export const GettingStarted = () => {
                     <div className="">
                         <div className="text-red-500 text-xs h-3 mt-2">{error ? "Please fill all the fields!" : ""}</div>
                         <BsFillArrowRightCircleFill onClick={()=>{
-                            if(!age || !gender || !weight || !height) return setError(true);
+                            if(!dob || !gender || !weight || !height) return setError(true);
                             setPage(2);
                             setError(false);
                             }} className="text-5xl text-gray-600 cursor-pointer hover:opacity-80 mt-3"/>
@@ -113,7 +120,7 @@ export const GettingStarted = () => {
                 page===6 ?
                 <div className="font-semibold flex flex-col items-center gap-4">
                     <div className="text-3xl">Thanks for putting in the information!</div>
-                    <button onClick={()=>{dispatch(submitBasicInfo({age, gender, weight, height, diet, activity, weightGoal, activityGoal}))}} className="bg-gray-800 text-white font-semibold py-2 px-3 w-60 rounded hover:opacity-90">
+                    <button onClick={()=>{dispatch(submitBasicInfo({dob, gender, weight, height, diet, activity, weightGoal, activityGoal}))}} className="bg-gray-800 text-white font-semibold py-2 px-3 w-60 rounded hover:opacity-90">
                         {
                             statusState==="loading" ?
                             <Loading width={24} height={24} stroke="white" className="mx-auto"/>

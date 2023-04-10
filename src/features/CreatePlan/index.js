@@ -9,8 +9,8 @@ import { IoMdRefresh } from "react-icons/io";
 import { MealPlanTable } from "../generalComponents/MealPlanTable";
 import { WorkoutRoutineTable } from "../generalComponents/WorkoutRoutineTable";
 
-export const CreateFitnessPlan = () => {
-    const [ page, setPageActual ] = useState(0);
+export const CreatePlan = ({plan, setShowCreate}) => {
+    const [ page, setPageActual ] = useState(plan==="fitness" ? 0 : plan==="meal" ? 1 : 7);
     const [ cuisine, setCuisine ] = useState("");
     const [ place, setPlace ] = useState("");
     const [ error, setError ] = useState(false);
@@ -18,35 +18,37 @@ export const CreateFitnessPlan = () => {
     const [ lunch, setLunch ] = useState(false);
     const [ dinner, setDinner ] = useState(false);
     const [ snacks, setSnacks ] = useState(false);
+    const [ mealPlanName, setMealPlanName ] = useState("");
     const [ goal, setGoal ] = useState("");
     const [ equipment, setEquipment ] = useState("");
+    const [ workoutRoutineName, setWorkoutRoutineName ] = useState("");
     const [ planName, setPlanName ] = useState("");
 
     const dispatch = useDispatch();
 
     const status = useSelector(dataStatus);
-    const mealPlan = useSelector(state=>state.data.mealPlan);
-    const workoutRoutine = useSelector(state=>state.data.workoutRoutine);
+    const mealPlan = useSelector(state=>state.data.activeMealPlan);
+    const workoutRoutine = useSelector(state=>state.data.activeWorkoutRoutine);
 
     const setPage = (page) => {
-        if(page===3){
-            dispatch(creatMealPlan({cuisine, place, breakfast, lunch, dinner, snacks}));
+        if(page===4){
+            dispatch(creatMealPlan({mealPlanName, cuisine, place, breakfast, lunch, dinner, snacks}));
             let time=0;
             const mealInterval = setInterval(()=>{
                 if(time>16 && status==="success"){
                     clearInterval(mealInterval);
-                    setPageActual(4);
+                    setPageActual(5);
                 }
                 time++;
             },1000);
         }
-        if(page===8){
-            dispatch(createWorkoutRoutine({goal, equipment}));
+        if(page===10){
+            dispatch(createWorkoutRoutine({workoutRoutineName, goal, equipment}));
             let time=0;
             const workoutInterval = setInterval(()=>{
                 if(time>16 && status==="success"){
                     clearInterval(workoutInterval);
-                    setPageActual(9);
+                    setPageActual(11);
                 }
                 time++;
             },1000);
@@ -54,10 +56,8 @@ export const CreateFitnessPlan = () => {
         setPageActual(page);
     }
 
-    if(workoutRoutine) console.log(workoutRoutine);
-
     return (
-        <div className="h-screen w-full flex justify-center items-center absolute top-0 right-0 bg-white">
+        <div className="h-screen w-full flex justify-center items-center absolute top-0 right-0 bg-white pt-24">
             {
                 page===0 ?
                 <div className="font-semibold text-center w-2/3 grid gap-6">
@@ -103,31 +103,56 @@ export const CreateFitnessPlan = () => {
                         {error ? "Select atleast one!" : ""}
                     </div>
                     <button onClick={()=>{
-                        if(!breakfast && !lunch && !dinner && !snacks) return setError(true);
-                        setPage(3)
-                        setError(false);
+                            if(!breakfast && !lunch && !dinner && !snacks) return setError(true);
+                            setPage(3)
+                            setError(false);
                         }} className="rounded-full p-4 text-xl bg-gray-700 text-white w-fit hover:opacity-90 flex items-center gap-2 mt-2">
                         <span>Next</span>
                         <BsFillArrowRightCircleFill className="text-2xl"/>
                     </button>
                 </div> :
-                page===3 ?
+                page===3 ? 
+                <div className="text-left text-3xl">
+                    <div className="flex gap-2 items-center mt-4">
+                        <div>Name this mealplan</div>
+                        <InlineInput value={mealPlanName} setValue={setMealPlanName} placeholder="My Meal Plan" errorCondition={error && !mealPlanName}/>
+                    </div>
+                    <div className="h-4 text-sm text-red-500">
+                        {error && !mealPlanName ? "Please enter a name for the mealplan!" : ""}
+                    </div>
+                    <button onClick={()=>{
+                        if(!mealPlanName) return setError(true);
+                        setPage(4);
+                        setError(false);
+                    }} className="rounded-full p-4 text-xl bg-gray-700 text-white w-fit hover:opacity-90 flex items-center gap-2 mt-2">
+                        <span>Generate</span>
+                        <BsFillArrowRightCircleFill className="text-2xl"/>
+                    </button>
+                </div> :
+                page===4 ?
                 <div className="w-2/3 text-left">
                     <div className="text-xl font-semibold text-gray-800">At Make Me Fit, we are dedicated to providing the best possible service to our clients. That's why we use the latest AI models to generate a personalized meal plan tailored to your dietary preferences and fitness goals. We believe that by combining cutting-edge technology with expert nutrition advice, we can help you achieve your health and fitness goals faster than ever before.</div>
                     <div className="text-xl font-semibold text-gray-600 mt-4">We are currently in the process of generating your personalized meal plan. This may take a few minutes. Please be patient while we work on your plan.</div>
                     <Loading width={28} height={28} stroke="black" className="mt-4"/>
                 </div> :
-                page===4 ?
+                page===5 ?
                 <div className="w-2/3 text-left flex">
                     <div className="grow flex flex-col justify-center text-2xl font-semibold text-gray-800">
                         <div className="">Congratulations!</div>
                         <div>Your personalized meal plan is ready</div>
                         <div className="flex gap-2">
-                            <button onClick={()=>setPage(5)} className="rounded-full p-4 text-xl bg-gray-700 text-white w-fit hover:opacity-90 flex items-center gap-2 mt-4">
-                                <span>Next</span>
-                                <BsFillArrowRightCircleFill className="text-2xl"/>
-                            </button>
-                            <button onClick={()=>setPage(3)} className="rounded-full p-4 text-xl bg-gray-700 text-white w-fit hover:opacity-90 flex items-center gap-2 mt-4">
+                            {
+                                plan==="fitness" ?
+                                <button onClick={()=>{setPage(6)}} className="rounded-full p-4 text-xl bg-gray-700 text-white w-fit hover:opacity-90 flex items-center gap-2 mt-4">
+                                    <span>Next</span>
+                                    <BsFillArrowRightCircleFill className="text-2xl"/>
+                                </button> :
+                                <button onClick={()=>{setShowCreate(false)}} className="rounded-full p-4 text-xl bg-gray-700 text-white w-fit hover:opacity-90 flex items-center gap-2 mt-4">
+                                    <span>Finish</span>
+                                    <BsFillArrowRightCircleFill className="text-2xl"/>
+                                </button>
+                            }
+                            <button onClick={()=>setPage(4)} className="rounded-full p-4 text-xl bg-gray-700 text-white w-fit hover:opacity-90 flex items-center gap-2 mt-4">
                                 <span>Regenerate</span>
                                 <IoMdRefresh className="text-2xl"/>
                             </button>
@@ -135,34 +160,50 @@ export const CreateFitnessPlan = () => {
                     </div>
                     <MealPlanTable mealPlan={mealPlan} className="h-96"/>
                 </div> :
-                page===5 ?
+                page===6 ?
                 <div className="w-2/3 text-left">
                     <div className="text-xl font-semibold text-gray-800">To complement your personalized meal plan, Make Me Fit also offers a range of customized exercise plans tailored to your fitness goals and experience level. Our advanced AI will work with you to design a workout program that is challenging yet achievable, helping you to build muscle, improve cardiovascular health, and increase endurance.</div>
-                    <button onClick={()=>setPage(6)} className="rounded-full p-4 text-xl bg-gray-700 text-white w-fit hover:opacity-90 flex items-center gap-2 mt-2">
+                    <button onClick={()=>setPage(7)} className="rounded-full p-4 text-xl bg-gray-700 text-white w-fit hover:opacity-90 flex items-center gap-2 mt-2">
                         <span>Next</span>
                         <BsFillArrowRightCircleFill className="text-2xl"/>
                     </button>
                 </div> :
-                page===6 ?
+                page===7 ?
                 <div className="text-left text-2xl">
                     <div className="font-bold text-left">What is your fitness goal?</div>
                     <div className="flex flex-col gap-2 mt-2">
-                        <div onClick={()=>{setGoal("Weight Loss"); setPage(7)}} className={`w-fit py-2 px-3 rounded-md ${goal==="Weight Loss" ? "text-black bg-gray-300" : "text-gray-600 bg-gray-200"} hover:text-black cursor-pointer`}>Weight Loss</div>
-                        <div onClick={()=>{setGoal("Muscle Gain"); setPage(7)}} className={`w-fit py-2 px-3 rounded-md ${goal==="Muscle Gain" ? "text-black bg-gray-300" : "text-gray-600 bg-gray-200"} hover:text-black cursor-pointer`}>Muscle Gain</div>
-                        <div onClick={()=>{setGoal("Cardiovascular Health"); setPage(7)}} className={`w-fit py-2 px-3 rounded-md ${goal==="Cardiovascular Health" ? "text-black bg-gray-300" : "text-gray-600 bg-gray-200"} hover:text-black cursor-pointer`}>Cardiovascular Health</div>
-                        <div onClick={()=>{setGoal("Endurance"); setPage(7)}} className={`w-fit py-2 px-3 rounded-md ${goal==="Endurance" ? "text-black bg-gray-300" : "text-gray-600 bg-gray-200"} hover:text-black cursor-pointer`}>Endurance</div>
-                    </div>
-                </div> :
-                page===7 ?
-                <div className="text-left text-2xl flex gap-2">
-                    <div className="font-bold text-left mt-2">I have access to a</div>
-                    <div className="flex flex-col gap-2">
-                        <div onClick={()=>{setEquipment("Gym"); setPage(8)}} className={`w-fit py-2 px-3 rounded-md ${equipment==="Gym" ? "text-black bg-gray-300" : "text-gray-600 bg-gray-200"} hover:text-black cursor-pointer`}>Gym</div>
-                        <div onClick={()=>{setEquipment("Home Gym"); setPage(8)}} className={`w-fit py-2 px-3 rounded-md ${equipment==="Home Gym" ? "text-black bg-gray-300" : "text-gray-600 bg-gray-200"} hover:text-black cursor-pointer`}>Home Gym</div>
-                        <div onClick={()=>{setEquipment("None"); setPage(8)}} className={`w-fit py-2 px-3 rounded-md ${equipment==="None" ? "text-black bg-gray-300" : "text-gray-600 bg-gray-200"} hover:text-black cursor-pointer`}>None</div>
+                        <div onClick={()=>{setGoal("Weight Loss"); setPage(8)}} className={`w-fit py-2 px-3 rounded-md ${goal==="Weight Loss" ? "text-black bg-gray-300" : "text-gray-600 bg-gray-200"} hover:text-black cursor-pointer`}>Weight Loss</div>
+                        <div onClick={()=>{setGoal("Muscle Gain"); setPage(8)}} className={`w-fit py-2 px-3 rounded-md ${goal==="Muscle Gain" ? "text-black bg-gray-300" : "text-gray-600 bg-gray-200"} hover:text-black cursor-pointer`}>Muscle Gain</div>
+                        <div onClick={()=>{setGoal("Cardiovascular Health"); setPage(8)}} className={`w-fit py-2 px-3 rounded-md ${goal==="Cardiovascular Health" ? "text-black bg-gray-300" : "text-gray-600 bg-gray-200"} hover:text-black cursor-pointer`}>Cardiovascular Health</div>
+                        <div onClick={()=>{setGoal("Endurance"); setPage(8)}} className={`w-fit py-2 px-3 rounded-md ${goal==="Endurance" ? "text-black bg-gray-300" : "text-gray-600 bg-gray-200"} hover:text-black cursor-pointer`}>Endurance</div>
                     </div>
                 </div> :
                 page===8 ?
+                <div className="text-left text-2xl flex gap-2">
+                    <div className="font-bold text-left mt-2">I have access to a</div>
+                    <div className="flex flex-col gap-2">
+                        <div onClick={()=>{setEquipment("Gym"); setPage(9)}} className={`w-fit py-2 px-3 rounded-md ${equipment==="Gym" ? "text-black bg-gray-300" : "text-gray-600 bg-gray-200"} hover:text-black cursor-pointer`}>Gym</div>
+                        <div onClick={()=>{setEquipment("Home Gym"); setPage(9)}} className={`w-fit py-2 px-3 rounded-md ${equipment==="Home Gym" ? "text-black bg-gray-300" : "text-gray-600 bg-gray-200"} hover:text-black cursor-pointer`}>Home Gym</div>
+                        <div onClick={()=>{setEquipment("None"); setPage(9)}} className={`w-fit py-2 px-3 rounded-md ${equipment==="None" ? "text-black bg-gray-300" : "text-gray-600 bg-gray-200"} hover:text-black cursor-pointer`}>None</div>
+                    </div>
+                </div> :
+                page===9 ? 
+                <div className="text-left text-3xl">
+                    <div className="flex gap-2 items-center mt-4">
+                        <div>Name this workout routine </div>
+                        <InlineInput value={workoutRoutineName} setValue={setWorkoutRoutineName} placeholder="My Workout" errorCondition={error && !mealPlanName}/>
+                    </div>
+                    <div className="text-xs h-4 text-red-500">{error && !workoutRoutineName && "Please enter a name for your workout routine!"}</div>
+                    <button onClick={()=>{
+                        if(!workoutRoutineName) return setError(true);
+                        setPage(10);
+                        setError(false);
+                    }} className="rounded-full p-4 text-xl bg-gray-700 text-white w-fit hover:opacity-90 flex items-center gap-2 mt-2">
+                        <span>Next</span>
+                        <BsFillArrowRightCircleFill className="text-2xl"/>
+                    </button>
+                </div> :
+                page===10 ?
                 <div className="w-2/3 text-left">
                     <div className="text-xl font-semibold text-gray-800">
                         {
@@ -180,17 +221,24 @@ export const CreateFitnessPlan = () => {
                     <div className="text-xl font-semibold text-gray-600 mt-4">We are currently in the process of generating your personalized workout routine. This may take a few minutes. Please be patient while we work on your plan.</div>
                     <Loading width={28} height={28} stroke="black" className="mt-4"/>
                 </div> :
-                page===9 ?
+                page===11 ?
                 <div className="w-2/3 text-left flex">
                     <div className="grow flex flex-col justify-center text-2xl font-semibold text-gray-800">
                         <div className="">Congratulations!</div>
                         <div>Your personalized workout routine is ready</div>
                         <div className="flex gap-2">
+                            {
+                                plan==="fitness" ?
+                                <button onClick={()=>setPage(12)} className="rounded-full p-4 text-xl bg-gray-700 text-white w-fit hover:opacity-90 flex items-center gap-2 mt-4">
+                                    <span>Next</span>
+                                    <BsFillArrowRightCircleFill className="text-2xl"/>
+                                </button> :
+                                <button onClick={()=>{setShowCreate(false)}} className="rounded-full p-4 text-xl bg-gray-700 text-white w-fit hover:opacity-90 flex items-center gap-2 mt-4">
+                                    <span>Finish</span>
+                                    <BsFillArrowRightCircleFill className="text-2xl"/>
+                                </button>
+                            }
                             <button onClick={()=>setPage(10)} className="rounded-full p-4 text-xl bg-gray-700 text-white w-fit hover:opacity-90 flex items-center gap-2 mt-4">
-                                <span>Next</span>
-                                <BsFillArrowRightCircleFill className="text-2xl"/>
-                            </button>
-                            <button onClick={()=>setPage(8)} className="rounded-full p-4 text-xl bg-gray-700 text-white w-fit hover:opacity-90 flex items-center gap-2 mt-4">
                                 <span>Regenerate</span>
                                 <IoMdRefresh className="text-2xl"/>
                             </button>
@@ -198,7 +246,7 @@ export const CreateFitnessPlan = () => {
                     </div>
                     <WorkoutRoutineTable workoutRoutine={workoutRoutine} className="h-96"/>
                 </div> :
-                page===10 ?
+                page===12 ?
                 <div className="w-2/3 text-left">
                     <div className="text-2xl font-semibold flex items-center gap-2">
                         <span>Name of the plan</span>
@@ -210,7 +258,8 @@ export const CreateFitnessPlan = () => {
                     }</div>
                     <button onClick={()=>{
                         if(!planName) return setError(true);
-                        dispatch(createFitnessPlan({planName}))
+                        dispatch(createFitnessPlan({planName}));
+                        setShowCreate(false);
                         setError(false);
                     }} className="rounded-full p-4 text-xl bg-gray-700 text-white w-40 hover:opacity-90 flex items-center gap-2 mt-2">
                         {

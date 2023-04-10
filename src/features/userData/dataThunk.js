@@ -2,11 +2,11 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export const submitBasicInfo = createAsyncThunk(
     'data/submitBasicInfo',
-    async ({ age, gender, weight, height, diet, activity, weightGoal, activityGoal  }, {getState} ) => {
+    async ({ dob, gender, weight, height, diet, activity, weightGoal, activityGoal  }, {getState} ) => {
         try {
             const reqObject={
                 user_id: getState().auth.userDetails.user_id,
-                age,
+                dob,
                 gender,
                 weight,
                 height,
@@ -27,7 +27,7 @@ export const submitBasicInfo = createAsyncThunk(
                 if(res.status!==200) throw new Error(`${res.status}`);
                 return res;
             }).then(res=>res.json());
-            return {type: 'success', bodyMetrics: {age, gender, weight, height, diet, activity, weightGoal, activityGoal}};
+            return {type: 'success', bodyMetrics: {dob, gender, weight, height, diet, activity, weightGoal, activityGoal}};
         } catch (error) {
             return {type: 'error', message: error.toString()};
         }
@@ -62,10 +62,12 @@ export const getUserData = createAsyncThunk(
 
 export const creatMealPlan = createAsyncThunk(
     'data/creatMealPlan',
-    async ({cuisine, place, breakfast, lunch, dinner, snacks}, {getState}) => {
+    async ({mealPlanName, cuisine, place, breakfast, lunch, dinner, snacks}, {getState}) => {
         try {
             const reqObject = {
                 user_id: getState().auth.userDetails.user_id,
+                fitnessPlanId: getState().data.activeFitnessPlan?.id,
+                mealPlanName,
                 cuisine,
                 place,
                 breakfast,
@@ -85,7 +87,7 @@ export const creatMealPlan = createAsyncThunk(
                 if(res.status!==200) throw new Error(`${res.status}`);
                 return res;
             }).then(res=>res.json());
-            return {type: 'success', mealPlan: response.mealPlan, mealPlanId: response.mealPlanId};
+            return {type: 'success', mealPlan: response};
         } catch (error) {
             return {type: 'error', message: error.toString()};
         }
@@ -94,10 +96,12 @@ export const creatMealPlan = createAsyncThunk(
 
 export const createWorkoutRoutine = createAsyncThunk(
     'data/createWorkoutRoutine',
-    async ({goal, equipment}, {getState}) => {
+    async ({workoutRoutineName, goal, equipment}, {getState}) => {
         try {
             const reqObject = {
                 user_id: getState().auth.userDetails.user_id,
+                fitnessPlanId: getState().data.activeFitnessPlan?.id,
+                workoutRoutineName,
                 goal,
                 equipment
             }
@@ -114,7 +118,7 @@ export const createWorkoutRoutine = createAsyncThunk(
                 return res;
             }
             ).then(res=>res.json());
-            return {type: 'success', workoutRoutine: response.workoutRoutine, workoutRoutineId: response.workoutRoutineId};
+            return {type: 'success', workoutRoutine: response};
         } catch (error) {
             return {type: 'error', message: error.toString()};
         }
@@ -128,8 +132,8 @@ export const createFitnessPlan = createAsyncThunk(
             const reqObject = {
                 user_id: getState().auth.userDetails.user_id,
                 planName,
-                mealPlanId: getState().data.mealPlan.id,
-                workoutRoutineId: getState().data.workoutRoutine.id,
+                mealPlanId: getState().data.activeMealPlan.id,
+                workoutRoutineId: getState().data.activeWorkoutRoutine.id,
             }
             const body=JSON.stringify(reqObject);
             const response = await fetch('http://localhost:8080/api/create-fitness-plan',{
@@ -144,8 +148,9 @@ export const createFitnessPlan = createAsyncThunk(
                 return res;
             }
             ).then(res=>res.json());
-            return {type: 'success', fitnessPlanId: response.fitnessPlanId};
+            return {type: 'success', fitnessPlanId: response.fitnessPlanId, fitnessPlanName: planName};
         } catch (error) {
+            console.log(error);
             return {type: 'error', message: error.toString()};
         }
     }
