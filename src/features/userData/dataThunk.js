@@ -53,7 +53,15 @@ export const getUserData = createAsyncThunk(
                 if(res.status!==200) throw new Error(`${res.status}`);
                 return res;
             }).then(res=>res.json());
-            return {type: 'success', bodyMetrics: response.bodyMetrics, fitnessPlans: response.fitnessPlans, activeFitnessPlan: response.activeFitnessPlan, newUser: response.newUser, image: response.image};
+            return {
+                type: 'success', 
+                bodyMetrics: response.bodyMetrics, 
+                fitnessPlans: response.fitnessPlans, 
+                activeFitnessPlan: response.activeFitnessPlan, 
+                newUser: response.newUser, 
+                image: response.image,
+                todayHistory: response.todayHistory,
+            };
         } catch (error) {
             return {type: 'error', message: error.toString()};
         }
@@ -248,5 +256,69 @@ export const getPlanData = createAsyncThunk(
             if(error) return {type: 'error', message: error.toString()};
         }
 
+    }
+);
+
+export const saveUserProgress = createAsyncThunk(
+    'data/saveUserProgress',
+    async ({weight,water,food,excercise}, {getState}) => {
+        try {
+            const reqObject = {
+                user_id: getState().auth.userDetails.user_id,
+                weight,
+                water,
+                food,
+                excercise,
+            };
+            const body=JSON.stringify(reqObject);
+            await fetch('http://localhost:8080/api/save-user-progress',{
+                method: "post",
+                headers:  {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${getState().auth.JWT}`
+                },
+                body,
+            }).then(res=>{
+                if(res.status!==200) throw new Error(`${res.status}`);
+                return res;
+            }).then(res=>res.json());
+            return {
+                type: 'success', 
+                todayHistory: {
+                    weight,
+                    water,
+                    food,
+                    excercise,
+                }
+            };
+        } catch (error) {
+            if(error) return {type: 'error', message: error.toString()};
+        }
+    }
+);
+
+export const getUserHistory = createAsyncThunk(
+    'data/getUserHistory',
+    async (_, {getState}) => {
+        try {
+            const reqObject = {
+                user_id: getState().auth.userDetails.user_id,
+            };
+            const body=JSON.stringify(reqObject);
+            const response = await fetch('http://localhost:8080/api/get-user-history',{
+                method: "post",
+                headers:  {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${getState().auth.JWT}`
+                },
+                body,
+            }).then(res=>{
+                if(res.status!==200) throw new Error(`${res.status}`);
+                return res;
+            }).then(res=>res.json());
+            return {type: 'success', userHistory: response.userHistory};
+        } catch (error) {
+            if(error) return {type: 'error', message: error.toString()};   
+        }
     }
 );

@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { creatMealPlan, createFitnessPlan, createWorkoutRoutine, getPlanData, getUserData, setUserImage, submitBasicInfo, updateUserMetrics } from './dataThunk';
+import { creatMealPlan, createFitnessPlan, createWorkoutRoutine, getPlanData, getUserData, getUserHistory, saveUserProgress, setUserImage, submitBasicInfo, updateUserMetrics } from './dataThunk';
 
 const initialState = {
     bodyMetrics: null,
@@ -10,6 +10,8 @@ const initialState = {
     status: 'idle',
     newUser: false,
     image: null,
+    todayHistory: null,
+    userHistory: null,
 };
 
 export const dataSlice = createSlice({
@@ -55,6 +57,7 @@ export const dataSlice = createSlice({
                         state.activeWorkoutRoutine = action.payload.activeFitnessPlan.workoutRoutines.find(routine=>routine.id===action.payload.activeFitnessPlan.activeWorkoutRoutineId);
                     }
                     state.newUser = action.payload.newUser;
+                    state.todayHistory = action.payload.todayHistory;
                 } else {
                     state.status = action.payload.message;
                 }
@@ -144,6 +147,28 @@ export const dataSlice = createSlice({
                 } else {
                     state.status = action.payload.message;
                 }
+            })
+            .addCase(saveUserProgress.pending, (state) => {
+                state.status = 'loading';
+            })
+            .addCase(saveUserProgress.fulfilled, (state, action) => {
+                if(action.payload.type==='success'){
+                    state.todayHistory = action.payload.todayHistory;
+                    state.status = 'success';
+                } else {
+                    state.status = action.payload.message;
+                }
+            })
+            .addCase(getUserHistory.pending, (state) => {
+                state.status = 'loading';
+            })
+            .addCase(getUserHistory.fulfilled, (state, action) => {
+                if(action.payload.type==='success'){
+                    state.userHistory = action.payload.userHistory;
+                    state.status = 'success';
+                } else {
+                    state.status = action.payload.message;
+                }
             });
     }
 });
@@ -157,3 +182,5 @@ export const mealPlan = state => state.data.activeMealPlan;
 export const workoutRoutine = state => state.data.activeWorkoutRoutine;
 export const newUser = state => state.data.newUser;
 export const userImage = state => state.data.image;
+export const userTodayHistory = state => state.data.todayHistory;
+export const userHistory = state => state.data.userHistory;

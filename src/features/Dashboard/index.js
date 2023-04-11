@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { userDetails } from "../Login/authSlice";
-import { getPlanData, getUserData, setUserImage, updateUserMetrics } from "../userData/dataThunk";
+import { getPlanData, getUserData, getUserHistory, setUserImage, updateUserMetrics } from "../userData/dataThunk";
 import { useEffect, useState } from "react";
 import { activeFitnessPlan as activeFitness, bodyMetrics, fitnessPlans, mealPlan, newUser, setActiveMealPlan, setActiveWorkoutRoutine, userImage, workoutRoutine } from "../userData/dataSlice";
 import { CreatePlan } from "../CreatePlan";
@@ -9,6 +9,7 @@ import { Table } from "../generalComponents/Table";
 import { GrUpload } from "react-icons/gr";
 import { PopUpWrapper } from "../generalComponents/PopUpWrapper";
 import { InlineInput } from "../generalComponents/InlineInput";
+import { TrackProgress } from "./TrackProgress";
 
 export const Dashborad = () => {
     const dispatch = useDispatch();
@@ -45,7 +46,10 @@ export const Dashborad = () => {
     const todayWorkoutRoutine = activeWorkoutRoutine?.data[today];
 
     useEffect(()=>{
-        if(userBodyMetrics===null) dispatch(getUserData());
+        if(userBodyMetrics===null){
+            dispatch(getUserData());
+            dispatch(getUserHistory());
+        }
         else {
             setWeight(userBodyMetrics.weight.toString());
             setHeight(userBodyMetrics.height.toString());
@@ -72,7 +76,7 @@ export const Dashborad = () => {
                 }
             </div>
         </div> :
-        <div className="p-4 pt-24 flex flex-col">
+        <div className="p-4 pt-20 flex flex-col">
             <div className="grid grid-cols-5 gap-6 mt-4">
                 <div className="flex flex-col gap-4 col-span-2">
                     <div className="rounded-md bg-gray-100 p-4 flex gap-8 items-center h-fit">
@@ -97,61 +101,39 @@ export const Dashborad = () => {
                             </div>
                         </div>
                     </div>
+                    <TrackProgress />
+                </div>
+                <div className="col-span-3">
                     <div className="grid grid-cols-4 gap-3">
-                        <div className="col-span-4 font-bold text-xl px-3 p-2 bg-gray-100 rounded-md flex gap-2">
+                        <div className="col-span-4 font-semibold text-3xl p-4 bg-gray-100 rounded-md flex gap-2">
                             <div className="grow">{activeFitnessPlan.name}</div>
                             <button onClick={()=>{
                                 setOpenSwitchPlan(true);
-                            }} className="text-sm font-semibold bg-gray-800 text-white p-1 px-2 rounded-md hover:opacity-90">Switch</button>
+                            }} className="text-lg font-medium bg-gray-800 text-white p-1 px-2 rounded-md hover:opacity-90">Switch</button>
                             <button onClick={()=>{
                                 setPlan("fitness");
                                 setOpenCreatePlan(true);
-                            }} className="text-sm font-semibold bg-gray-800 text-white p-1 px-2 rounded-md hover:opacity-90">Create New</button>
-                        </div>
-                        <div className="text-center col-span-2 p-2 bg-gray-100 rounded-md">
-                            <div className="text-lg font-semibold">Meal Plans</div>
-                            <div className="overflow-scroll h-[6.5rem] mt-2 flex flex-col gap-2">
-                                {
-                                    activeFitnessPlan.mealPlans.map((mealPlan, index)=>(
-                                        <div onClick={()=>{dispatch(setActiveMealPlan(mealPlan))}} key={index} className={`p-1 ${activeMealPlan.id === mealPlan.id ? 'bg-gray-300' : 'bg-gray-200'} rounded-md cursor-pointer hover:opacity-80`}>
-                                            <div>{mealPlan.name}</div>
-                                        </div>
-                                    ))
-                                }
-                            </div>
-                            <div onClick={()=>{
-                                setPlan("meal");
-                                setOpenCreatePlan(true);
-                            }} className="p-1 bg-gray-800 text-white font-semibold rounded-md hover:opacity-90 cursor-pointer">
-                                <div>Add Plan</div>
-                            </div>
-                        </div>
-                        <div className="text-center col-span-2 p-2 bg-gray-100 rounded-md">
-                            <div className="text-xl font-semibold">Workout Routines</div>
-                            <div className="overflow-scroll h-[6.5rem] mt-2 flex flex-col gap-2">
-                                {
-                                    activeFitnessPlan.workoutRoutines.map((workoutRoutine, index)=>(
-                                        <div onClick={()=>{
-                                            dispatch(setActiveWorkoutRoutine(workoutRoutine));
-                                        }} key={index} className={`p-1 ${activeWorkoutRoutine.id === workoutRoutine.id ? 'bg-gray-300' : 'bg-gray-200'} rounded-md cursor-pointer hover:opacity-80`}>
-                                            <div>{workoutRoutine.name}</div>
-                                        </div>
-                                    ))
-                                }
-                            </div>
-                            <div onClick={()=>{
-                                setPlan("workout");
-                                setOpenCreatePlan(true);
-                            }} className="p-1 bg-gray-800 text-white font-semibold rounded-md hover:opacity-90 cursor-pointer">
-                                <div>Add Plan</div>
-                            </div>
+                            }} className="text-lg font-medium bg-gray-800 text-white p-1 px-2 rounded-md hover:opacity-90">Create New</button>
                         </div>
                     </div>
-                </div>
-                <div className="col-span-3">
-                    <div className="text-3xl font-bold text-gray-800">Today's Plan</div>
-                    <div className="text-xl font-semibold text-gray-700 mt-2">Mealplan</div>
-                    <Table className="mt-1"
+                    <div className="text-2xl font-semibold mt-4">Mealplan</div>
+                    <div className="font-semibold text-gray-800 flex gap-2 overflow-x-scroll mt-2">
+                        {
+                            activeFitnessPlan.mealPlans.map((mealPlan, index)=>(
+                                <div onClick={()=>{dispatch(setActiveMealPlan(mealPlan))}} key={index} className={`py-1.5 px-3 border-[1.5px] ${activeMealPlan.id === mealPlan.id ? 'bg-gray-200 border-gray-800' : 'bg-gray-100 border-gray-100'} rounded-md cursor-pointer hover:bg-gray-200`}>
+                                    <div>{mealPlan.name}</div>
+                                </div>
+                            ))
+                        }
+                        <div className="grow" />
+                        <div onClick={()=>{
+                                setPlan("meal");
+                                setOpenCreatePlan(true);
+                            }} className="py-1.5 px-3 border-2 border-gray-700 bg-gray-700 text-white rounded-md cursor-pointer hover:opacity-80">
+                            <div>Add New</div>
+                        </div>
+                    </div>
+                    <Table className="mt-2"
                         colSpan={[1,4,1]}
                         header={["Meal","Food","Calories"]}
                         rows={
@@ -163,8 +145,24 @@ export const Dashborad = () => {
                                     todayMealPlan[meal.toLowerCase()].calories
                                 ])
                         }/>
-                    <div className="text-xl font-semibold mt-4 text-gray-700">Workout</div>
-                    <Table className="mt-1" 
+                    <div className="text-2xl font-semibold mt-4">Workout Routine</div>
+                    <div className="font-semibold text-gray-800 flex gap-2 overflow-x-scroll mt-2">
+                        {
+                            activeFitnessPlan.workoutRoutines.map((workoutRoutine, index)=>(
+                                <div onClick={()=>{dispatch(setActiveWorkoutRoutine(workoutRoutine))}} key={index} className={`py-1.5 px-3 border-[1.5px] ${activeWorkoutRoutine.id === workoutRoutine.id ? 'bg-gray-200 border-gray-800' : 'bg-gray-100 border-gray-100'} rounded-md cursor-pointer hover:bg-gray-200`}>
+                                    <div>{workoutRoutine.name}</div>
+                                </div>
+                            ))
+                        }
+                        <div className="grow" />
+                        <div onClick={()=>{
+                                setPlan("routine");
+                                setOpenCreatePlan(true);
+                            }} className="py-1.5 px-3 border-2 border-gray-700 bg-gray-700 text-white rounded-md cursor-pointer hover:opacity-80">
+                            <div>Add New</div>
+                        </div>
+                    </div>
+                    <Table className="mt-2" 
                             colSpan={[2,1,1,2]} 
                             header={["Excercise","Sets","Reps","Muscle Group"]} 
                             rows={todayWorkoutRoutine.map(({name,sets,reps,muscleGroup})=>[name,sets,reps,muscleGroup])}/>
