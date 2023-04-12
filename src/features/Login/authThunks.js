@@ -9,7 +9,7 @@ export const validateSignIn = createAsyncThunk(
                 password,
             };
             const body=JSON.stringify(reqObject);
-            const response = await fetch('http://localhost:8080/api/signin',{
+            const response = await fetch('https://make-me-fit-backend.onrender.com/api/signin',{
                 method: "post",
                 headers: { "Content-Type": "application/json" },
                 body,
@@ -36,7 +36,7 @@ export const validateSignUp = createAsyncThunk(
                 password,
             };
             const body=JSON.stringify(reqObject);
-            const response = await fetch('http://localhost:8080/api/signup',{
+            const response = await fetch('https://make-me-fit-backend.onrender.com/api/signup',{
                 method: "post",
                 headers: { "Content-Type": "application/json" },
                 body,

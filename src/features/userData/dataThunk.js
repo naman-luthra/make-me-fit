@@ -16,7 +16,7 @@ export const submitBasicInfo = createAsyncThunk(
                 activityGoal
             };
             const body=JSON.stringify(reqObject);
-            await fetch('http://localhost:8080/api/submit-user-info',{
+            await fetch('https://make-me-fit-backend.onrender.com/api/submit-user-info',{
                 method: "post",
                 headers: { 
                     "Content-Type": "application/json",
@@ -42,7 +42,7 @@ export const getUserData = createAsyncThunk(
                 user_id: getState().auth.userDetails.user_id
             }
             const body=JSON.stringify(reqObject);
-            const response  = await fetch('http://localhost:8080/api/get-user-data',{
+            const response  = await fetch('https://make-me-fit-backend.onrender.com/api/get-user-data',{
                 method: "post",
                 headers: {
                     "Content-Type": "application/json",
@@ -85,7 +85,7 @@ export const creatMealPlan = createAsyncThunk(
                 snacks
             }
             const body=JSON.stringify(reqObject);
-            const response = await fetch('http://localhost:8080/api/create-meal-plan',{
+            const response = await fetch('https://make-me-fit-backend.onrender.com/api/create-meal-plan',{
                 method: "post",
                 headers: {
                     "Content-Type": "application/json",
@@ -116,7 +116,7 @@ export const createWorkoutRoutine = createAsyncThunk(
                 equipment
             }
             const body=JSON.stringify(reqObject);
-            const response = await fetch('http://localhost:8080/api/create-workout-routine',{
+            const response = await fetch('https://make-me-fit-backend.onrender.com/api/create-workout-routine',{
                 method: "post",
                 headers: {
                     "Content-Type": "application/json",
@@ -146,7 +146,7 @@ export const createFitnessPlan = createAsyncThunk(
                 workoutRoutineId: getState().data.activeWorkoutRoutine.id,
             }
             const body=JSON.stringify(reqObject);
-            const response = await fetch('http://localhost:8080/api/create-fitness-plan',{
+            const response = await fetch('https://make-me-fit-backend.onrender.com/api/create-fitness-plan',{
                 method: "post",
                 headers: {
                     "Content-Type": "application/json",
@@ -183,7 +183,7 @@ export const setUserImage = createAsyncThunk(
             }
             console.log(reqObject);
             const body=JSON.stringify(reqObject);
-            await fetch('http://localhost:8080/api/upload-user-image',{
+            await fetch('https://make-me-fit-backend.onrender.com/api/upload-user-image',{
                 method: "post",
                 headers:  {
                     "Content-Type": "application/json",
@@ -213,7 +213,7 @@ export const updateUserMetrics = createAsyncThunk(
                 gender,
             }
             const body=JSON.stringify(reqObject);
-            await fetch('http://localhost:8080/api/update-user-metrics',{
+            await fetch('https://make-me-fit-backend.onrender.com/api/update-user-metrics',{
                 method: "post",
                 headers:  {
                     "Content-Type": "application/json",
@@ -240,7 +240,7 @@ export const getPlanData = createAsyncThunk(
                 plan_id: planId,
             };
             const body=JSON.stringify(reqObject);
-            const response = await fetch('http://localhost:8080/api/get-plan-data',{
+            const response = await fetch('https://make-me-fit-backend.onrender.com/api/get-plan-data',{
                 method: "post",
                 headers:  {
                     "Content-Type": "application/json",
@@ -271,7 +271,7 @@ export const saveUserProgress = createAsyncThunk(
                 excercise,
             };
             const body=JSON.stringify(reqObject);
-            await fetch('http://localhost:8080/api/save-user-progress',{
+            await fetch('https://make-me-fit-backend.onrender.com/api/save-user-progress',{
                 method: "post",
                 headers:  {
                     "Content-Type": "application/json",
@@ -305,7 +305,7 @@ export const getUserHistory = createAsyncThunk(
                 user_id: getState().auth.userDetails.user_id,
             };
             const body=JSON.stringify(reqObject);
-            const response = await fetch('http://localhost:8080/api/get-user-history',{
+            const response = await fetch('https://make-me-fit-backend.onrender.com/api/get-user-history',{
                 method: "post",
                 headers:  {
                     "Content-Type": "application/json",

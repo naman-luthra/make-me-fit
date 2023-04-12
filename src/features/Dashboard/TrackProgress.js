@@ -24,10 +24,10 @@ export const TrackProgress = () => {
     const dispatch = useDispatch();
 
     const historyUpdated = (
-        weight!==todayHistory.weight ||
-        water!==todayHistory.water ||
-        food!==todayHistory.food ||
-        excercise!==todayHistory.excercise
+        weight!==todayHistory?.weight ||
+        water!==todayHistory?.water ||
+        food!==todayHistory?.food ||
+        excercise!==todayHistory?.excercise
     );
 
     const calculateTotalCalories = food => food ? food.reduce((calCount, foodItem) => (calCount+(foodItem.carbs*4+foodItem.protein*4+foodItem.fat*9)),0) : 0
@@ -124,7 +124,7 @@ export const TrackProgress = () => {
             </div>
           <div className="mt-2 text-xl font-semibold">Record Meals</div>
             <Table 
-                className="mt-2 h-40 text-left"
+                className="mt-2 h-44 text-left"
                 colSpan={[4,2,2,2,2]}
                 header={["Name","Calories","Carbs","Protein","Fat"]}
                 rows={food.map(({name,carbs,protein,fat})=>[name,carbs*4+protein*4+fat*9,carbs,protein,fat])}

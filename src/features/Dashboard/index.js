@@ -35,9 +35,9 @@ export const Dashborad = () => {
     const [ gender, setGender ] = useState("");
 
     const updatedProfile = ( 
-        weight!==userBodyMetrics?.weight.toString() ||
-        height!==userBodyMetrics?.height.toString() ||
-        weightGoal!==userBodyMetrics?.weightGoal.toString() ||
+        weight!==userBodyMetrics?.weight?.toString() ||
+        height!==userBodyMetrics?.height?.toString() ||
+        weightGoal!==userBodyMetrics?.weightGoal?.toString() ||
         gender!==userBodyMetrics?.gender
     );
 
@@ -51,9 +51,9 @@ export const Dashborad = () => {
             dispatch(getUserHistory());
         }
         else {
-            setWeight(userBodyMetrics.weight.toString());
-            setHeight(userBodyMetrics.height.toString());
-            setWeightGoal(userBodyMetrics.weightGoal.toString());
+            setWeight(userBodyMetrics.weight?.toString());
+            setHeight(userBodyMetrics.height?.toString());
+            setWeightGoal(userBodyMetrics.weightGoal?.toString());
             setGender(userBodyMetrics.gender);
         }
     },[userBodyMetrics, dispatch]);
@@ -210,13 +210,13 @@ export const Dashborad = () => {
                         </div> :
                         <>
                             <div className="text-2xl font-bold">Upload Image</div>
-                            <div className="h-36 border-2 border-gray-800 border-dashed rounded-md mt-2" onDrop={e=>{
+                            <div className="h-36 border-2 border-gray-800 border-dashed rounded-md mt-2 flex justify-center items-center" onDrop={e=>{
                                 setImage(e.dataTransfer.files[0]);
                                 e.preventDefault();
                                 }} onDragOver={e=>e.preventDefault()}>
                                 <div className="font-bold text-gray-500">Drop image here</div>
                             </div>
-                            <input type="file" multiple={false} onChange={e=>{setImage(e.target.files[0])}}/>
+                            {/* <input type="file" className="w-fit mx-auto mt-2" multiple={false} onChange={e=>{setImage(e.target.files[0])}}/> */}
                         </>
                     }
                 </div>
