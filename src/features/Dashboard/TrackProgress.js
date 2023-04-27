@@ -134,9 +134,12 @@ export const TrackProgress = () => {
                         <div className="text-sm font-semibold">
                             {calculateTotalCalories(food)} KCal 
                         </div>
-                        <div className="text-xs text-gray-700">
-                            {Math.round(food.reduce((p,c)=>(c.protein*4+p),0)*1000/calculateTotalCalories(food))/10}% Protein, {Math.round(food.reduce((p,c)=>(c.carbs*4+p),0)*1000/calculateTotalCalories(food))/10}% Carbs, {Math.round(food.reduce((p,c)=>(c.fat*9+p),0)*1000/calculateTotalCalories(food))/10}% Fat
-                        </div>
+                        {
+                            calculateTotalCalories(food) > 0 &&
+                            <div className="text-xs text-gray-700">
+                                {Math.round(food.reduce((p,c)=>(c.protein*4+p),0)*1000/calculateTotalCalories(food))/10}% Protein, {Math.round(food.reduce((p,c)=>(c.carbs*4+p),0)*1000/calculateTotalCalories(food))/10}% Carbs, {Math.round(food.reduce((p,c)=>(c.fat*9+p),0)*1000/calculateTotalCalories(food))/10}% Fat
+                            </div>
+                        }
                     </div>
                 }
                 inputRecords={[
