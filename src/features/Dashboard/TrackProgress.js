@@ -129,6 +129,16 @@ export const TrackProgress = () => {
                 header={["Name","Calories","Carbs","Protein","Fat"]}
                 rows={food.map(({name,carbs,protein,fat})=>[name,carbs*4+protein*4+fat*9,carbs,protein,fat])}
                 addRecord={true}
+                summary={
+                    <div className="flex gap-1 items-center px-3">
+                        <div className="text-sm font-semibold">
+                            {calculateTotalCalories(food)} KCal 
+                        </div>
+                        <div className="text-xs text-gray-700">
+                            {Math.round(food.reduce((p,c)=>(c.protein*4+p),0)*1000/calculateTotalCalories(food))/10}% Protein, {Math.round(food.reduce((p,c)=>(c.carbs*4+p),0)*1000/calculateTotalCalories(food))/10}% Carbs, {Math.round(food.reduce((p,c)=>(c.fat*9+p),0)*1000/calculateTotalCalories(food))/10}% Fat
+                        </div>
+                    </div>
+                }
                 inputRecords={[
                     {derived: false, default: ""},
                     {derived: true, default: 0, fun: record=>{

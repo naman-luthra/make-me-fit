@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { InlineInput } from "./InlineInput";
 
-export const Table = ({className, colSpan, header, rows, headerStyle, rowStyle, addRecord, inputRecords, setRecord}) => {
+export const Table = ({className, colSpan, header, rows, headerStyle, rowStyle, addRecord, inputRecords, setRecord, summary}) => {
     const columns = colSpan.reduce((a,b)=>a+b,0);
     const [ adding, setAdding ] = useState(false);
     const [ newRecord, setNewRecord ] = useState([]);
@@ -54,7 +54,14 @@ export const Table = ({className, colSpan, header, rows, headerStyle, rowStyle, 
             </div>
             {
                 addRecord && (
-                    <div className="flex items-end justify-end p-2">
+
+                    <div className="flex items-end p-2">
+                        <div className="grow">
+                            {
+                                summary &&
+                                summary
+                            }
+                        </div>
                         <button onClick={()=>setAdding(true)} className="bg-gray-800 text-white text-sm font-semibold hover:opacity-80 px-2 py-1 rounded-md">Add Record</button>
                     </div>
                 )
