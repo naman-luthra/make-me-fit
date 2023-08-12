@@ -77,9 +77,9 @@ export const Dashborad = () => {
             </div>
         </div> :
         <div className="p-4 pt-20 flex flex-col">
-            <div className="grid grid-cols-5 gap-6 mt-4">
-                <div className="flex flex-col gap-4 col-span-2">
-                    <div className="rounded-md bg-gray-100 p-4 flex gap-8 items-center h-fit">
+            <div className="grid lg:grid-cols-5 gap-6 mt-4">
+                <div className="flex flex-col gap-4 lg:col-span-2 ">
+                    <div className="rounded-md bg-gray-100 p-4 flex w-full gap-8 items-center h-fit">
                         <div className="w-32 h-32 rounded-full overflow-hidden group relative cursor-pointer">
                             <img id="display-picture" src={ userImageSrc ? userImageSrc : "./img/default-dp.jpeg" } alt="" className="w-32 h-32"/>
                             <div onClick={()=>setUploadImage(true)} className="h-full w-full bg-black bg-opacity-20 absolute top-0 left-0 hidden justify-center items-center group-hover:flex">
@@ -103,8 +103,8 @@ export const Dashborad = () => {
                     </div>
                     <TrackProgress />
                 </div>
-                <div className="col-span-3">
-                    <div className="grid grid-cols-4 gap-3">
+                <div className="lg:col-span-3">
+                    <div className="grid lg:grid-cols-4 gap-3">
                         <div className="col-span-4 font-semibold text-3xl p-4 bg-gray-100 rounded-md flex gap-2">
                             <div className="grow">{activeFitnessPlan.name}</div>
                             <button onClick={()=>{
