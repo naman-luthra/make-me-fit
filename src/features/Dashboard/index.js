@@ -10,6 +10,7 @@ import { GrUpload } from "react-icons/gr";
 import { PopUpWrapper } from "../generalComponents/PopUpWrapper";
 import { InlineInput } from "../generalComponents/InlineInput";
 import { TrackProgress } from "./TrackProgress";
+import { Loading } from "../generalComponents/Loading";
 
 export const Dashborad = () => {
     const dispatch = useDispatch();
@@ -58,7 +59,15 @@ export const Dashborad = () => {
         }
     },[userBodyMetrics, dispatch]);
 
-    if(userBodyMetrics===null) return <div>Loading...</div>;
+    useEffect(()=>{
+        document.title="Dashboard | MakeMeFit";
+    },[]);
+
+    if(!userBodyMetrics) return (
+        <div className="flex h-screen justify-center items-center">
+            <Loading stroke="black" width="36px" height="36px"/>
+        </div>
+    )
 
     return (
         newUserBoolean ? 

@@ -9,7 +9,7 @@ export const validateSignIn = createAsyncThunk(
                 password,
             };
             const body=JSON.stringify(reqObject);
-            const response = await fetch(`${process.env.BACKEND_URL}/api/signin`,{
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/signin`,{
                 method: "post",
                 headers: { "Content-Type": "application/json" },
                 body,
@@ -36,7 +36,7 @@ export const validateSignUp = createAsyncThunk(
                 password,
             };
             const body=JSON.stringify(reqObject);
-            const response = await fetch(`${process.env.BACKEND_URL}/api/signup`,{
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/signup`,{
                 method: "post",
                 headers: { "Content-Type": "application/json" },
                 body,

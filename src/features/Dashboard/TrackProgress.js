@@ -30,22 +30,16 @@ export const TrackProgress = () => {
         excercise!==todayHistory?.excercise
     );
 
-    const calculateTotalCalories = food => food ? food.reduce((calCount, foodItem) => (calCount+(foodItem.carbs*4+foodItem.protein*4+foodItem.fat*9)),0) : 0
-    //const today = todayHistory;
+    const calculateTotalCalories = food => food ? food.reduce((calCount, foodItem) => (calCount+(foodItem.carbs*4+foodItem.protein*4+foodItem.fat*9)),0) : 0;
+    const toSinglePrecision = num => Math.round(num*10)/10;
 
-      //const caloriesFromProtein = today ? today.food.reduce((prev, foodItem)=>(prev+foodItem.protein*4),0) : 0;
-        //const caloriesFromCarbs = today ? today.food.reduce((prev, foodItem)=>(prev+foodItem.carbs*4),0) : 0;
-        //const caloriesFromFat = today ? today.food.reduce((prev, foodItem)=>(prev+foodItem.fat*9),0) : 0;
-        // const totalCalories = caloriesFromProtein+caloriesFromCarbs+caloriesFromFat;
+    let latest;
 
-        let latest;
+    history.forEach(d=>{
+        if(!latest || latest.day<d.day) latest=d;
+    });
 
-        history.forEach(d=>{
-            if(!latest || latest.day<d.day) latest=d;
-        });
-
-        const bmr = 88.362 + (13.397 * latest?.weight) + (4.799 * 177) - (5.677 * 20);
-        // const calorieDeficit = bmr+today?.excercise-totalCalories;
+    const bmr = 88.362 + (13.397 * latest?.weight) + (4.799 * 177) - (5.677 * 20);
     
       const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
       const dates = {
@@ -127,12 +121,12 @@ export const TrackProgress = () => {
                 className="mt-2 h-44 text-left"
                 colSpan={[4,2,2,2,2]}
                 header={["Name","Calories","Carbs","Protein","Fat"]}
-                rows={food.map(({name,carbs,protein,fat})=>[name,carbs*4+protein*4+fat*9,carbs,protein,fat])}
+                rows={food.map(({name,carbs,protein,fat})=>[name,toSinglePrecision(carbs*4+protein*4+fat*9),carbs,protein,fat])}
                 addRecord={true}
                 summary={
                     <div className="flex gap-1 items-center px-3">
                         <div className="text-sm font-semibold">
-                            {calculateTotalCalories(food)} KCal 
+                            {toSinglePrecision(calculateTotalCalories(food))} KCal 
                         </div>
                         {
                             calculateTotalCalories(food) > 0 &&

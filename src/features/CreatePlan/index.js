@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BsFillArrowRightCircleFill, BsFillSaveFill } from "react-icons/bs";
 import { InlineInput } from "../generalComponents/InlineInput";
 import { Loading } from "../generalComponents/Loading";
@@ -55,6 +55,10 @@ export const CreatePlan = ({plan, setShowCreate}) => {
         }
         setPageActual(page);
     }
+
+    useEffect(()=>{
+        document.title="Create Plan | MakeMeFit";
+    },[]);
 
     return (
         <div className="h-screen w-full flex justify-center items-center absolute top-0 right-0 bg-white pt-24">
