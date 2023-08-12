@@ -1,46 +1,67 @@
-# Getting Started with Create React App and Redux
+# Make Me Fit - Frontend Repository
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
+<img src="/public/img/logo.png" width="30%">
 
-## Available Scripts
+Welcome to the Make Me Fit frontend repository! This README will guide you through the setup and usage of the frontend application, which is an AI-enhanced health tracking app designed to help users create personalized diet plans and workout routines tailored to their preferences, goals, and body using OpenAI's API.
 
-In the project directory, you can run:
+## Table of Contents
 
-### `npm start`
+- [Introduction](#introduction)
+- [Features](#features)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Configuration](#configuration)
+- [Usage](#usage)
+  - [Running the App](#running-the-app)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Introduction
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Make Me Fit is an innovative health tracking app powered by AI. It leverages OpenAI's API to provide users with personalized diet plans, workout routines, and diet & exercise tracking to help them achieve their fitness goals.
 
-### `npm test`
+## Features
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Personalized Diet Plans: Create diet plans tailored to your dietary preferences and body.
+- Customized Workout Routines: Generate workout routines aligned with your goals and body type.
+- Calorie and Exercise Tracking: Keep track of your daily calorie intake and exercise progress.
 
-### `npm run build`
+## Getting Started
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Prerequisites
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Before you begin, ensure you have the following installed on your system:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- [Git](https://git-scm.com/)
+- [Node.js](https://nodejs.org/) (including npm)
 
-### `npm run eject`
+### Installation
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Follow these steps to set up the frontend application:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+1. Clone the repository to your local machine using the following command:
+   ```bash
+   git clone https://github.com/naman-luthra/make-me-fit
+2. Navigate to the project directory:
+   ```bash
+   cd make-me-fit
+3. Install the required npm packages by running:
+   ```bash
+   npm install
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Configuration
+Create a .env.local file in the project directory and provide the backend API URL:
+```
+REACT_APP_BACKEND_URL=your_backend_url
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Usage
 
-## Learn More
+### Running the App
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+To start the frontend application, follow these steps:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+1. In the terminal, navigate to the project directory.
+3. Run the following command:
+    ```bash
+    npm install
+4. The app should now be running locally. Access it by opening your web browser and navigating to http://localhost:3000.
