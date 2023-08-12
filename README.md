@@ -65,3 +65,6 @@ To start the frontend application, follow these steps:
     ```bash
     npm install
 4. The app should now be running locally. Access it by opening your web browser and navigating to http://localhost:3000.
+
+### Demo Video
+[Link to demo video](https://drive.google.com/file/d/1l8bpHZuYTX2C0CgvMeB7VW88A5FiAl0Z/view?usp=sharing)
